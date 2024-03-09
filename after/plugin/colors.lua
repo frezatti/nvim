@@ -7,7 +7,6 @@ require('rose-pine').setup({
 	dim_nc_background = false,
 	disable_background = false,
 	disable_float_background = false,
-    
 
 	--- @usage string hex value or named color from rosepinetheme.com/palette
 	groups = {
