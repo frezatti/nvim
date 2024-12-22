@@ -1,4 +1,3 @@
-require("codebullet")
-
+require("config.lazy")
 
 
