@@ -1,5 +1,5 @@
 return {
-	"stevearc/conform.nvim", -- This is the required plugin string
+	"stevearc/conform.nvim",
 	lazy = true,
 	event = { "BufWritePre" },
 	cmd = { "ConformInfo" },

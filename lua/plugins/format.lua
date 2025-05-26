@@ -4,7 +4,6 @@ return {
 	cmd = { "ConformInfo" }, -- Command to show formatter info
 	dependencies = { "williamboman/mason.nvim" }, -- Depends on Mason to install formatters
 	opts = {
-		-- Map filetypes to formatters installed via Mason.
 		formatters_by_ft = {
 			lua = { "stylua" },
 			python = { "ruff_format", "isort", "black" },
@@ -28,7 +27,6 @@ return {
 			lsp_fallback = true, -- Use LSP formatting if conform formatter fails
 		},
 	},
-	-- Optional: Add a keymap for manual formatting
 	init = function()
 		vim.keymap.set({ "n", "v" }, "<leader>f", function()
 			require("conform").format({ async = true, lsp_fallback = true })
