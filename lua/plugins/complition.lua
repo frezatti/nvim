@@ -8,7 +8,6 @@ return {
 		"hrsh7th/cmp-nvim-lsp", -- LSP source for nvim-cmp
 		"L3MON4D3/LuaSnip", -- snippet engine
 		"saadparwaiz1/cmp_luasnip", -- snippet source for nvim-cmp
-		-- Optional: Add other sources like cmp-nvim-lua, cmp-nvim-lsp-signature-help, etc.
 	},
 	config = function()
 		local cmp = require("cmp")
