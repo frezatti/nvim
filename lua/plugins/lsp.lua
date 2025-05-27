@@ -6,7 +6,6 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim", -- Optional dep if mason.lua handles it
 
-		-- Optional: Provides status updates for LSP initialization, etc.
 		{ "j-hui/fidget.nvim", tag = "legacy", opts = {} },
 
 		{ "folke/neodev.nvim", opts = {} },
@@ -18,19 +17,16 @@ return {
 		local lspconfig = require("lspconfig")
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		-- Global mappings (moved from original config for clarity)
 		vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "LSP: Show line diagnostics" })
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "LSP: Go to previous diagnostic" })
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "LSP: Go to next diagnostic" })
 		vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "LSP: Open diagnostics list" })
 
-		-- Shared on_attach function for LSP servers
 		local on_attach = function(client, bufnr)
 			local map = function(keys, func, desc)
 				vim.keymap.set("n", keys, func, { buffer = bufnr, desc = "LSP: " .. desc })
 			end
 
-			-- Use Lspsaga or Telescope for LSP actions
 			local lspsaga_avail, lspsaga = pcall(require, "lspsaga.lsp")
 			local telescope_avail, telescope = pcall(require, "telescope.builtin")
 
@@ -75,7 +71,6 @@ return {
 				end
 			end, "[C]ode [A]ction")
 
-			-- Document Highlights (same as your original config)
 			if client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
 				local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
 				vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
@@ -105,7 +100,6 @@ return {
 			end
 		end -- end on_attach
 
-		-- Setup servers using mason-lspconfig
 		require("mason-lspconfig").setup({
 			handlers = {
 				function(server_name)
@@ -115,7 +109,6 @@ return {
 					})
 				end,
 
-				-- Example custom handler for lua_ls (if needed)
 				["lua_ls"] = function()
 					lspconfig.lua_ls.setup({
 						capabilities = capabilities,
@@ -130,7 +123,6 @@ return {
 						},
 					})
 				end,
-				-- Add other custom server setups here if necessary
 			},
 		})
 	end,
