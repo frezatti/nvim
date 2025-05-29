@@ -4,11 +4,22 @@ return {
 	dependencies = {
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
-		"WhoIsSethDaniel/mason-tool-installer.nvim", -- Optional dep if mason.lua handles it
+		"WhoIsSethDaniel/mason-tool-installer.nvim",
 
 		{ "j-hui/fidget.nvim", tag = "legacy", opts = {} },
 
-		{ "folke/neodev.nvim", opts = {} },
+		-- Crucial for Lua LSP autocompletion and diagnostics (e.g., 'vim' global)
+		{
+			"folke/neodev.nvim",
+			opts = {
+				library = {
+					enabled = true,
+					runtime = true, -- Recognizes Neovim's core Lua runtime
+					types = true, -- Provides types for vim.api, vim.lsp, etc.
+					plugins = true, -- Provides types for your installed plugins
+				},
+			},
+		},
 		"hrsh7th/cmp-nvim-lsp",
 		"nvimdev/lspsaga.nvim",
 		"nvim-telescope/telescope.nvim",
@@ -17,12 +28,30 @@ return {
 		local lspconfig = require("lspconfig")
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+		-- Explicitly set positionEncoding for better LSP communication
+		capabilities.textDocument.positionEncoding = "utf-16"
+
+		-- Set up nvim-cmp for autocompletion with Tab navigation
+		local cmp = require("cmp")
+		cmp.setup({
+			mapping = {
+				["<Tab>"] = cmp.mapping.select_next_item(),
+				["<S-Tab>"] = cmp.mapping.select_prev_item(),
+				["<CR>"] = cmp.mapping.confirm({ select = true }), -- Confirm selection with Enter
+			},
+			sources = cmp.config.sources({
+				{ name = "nvim_lsp" }, -- LSP completion source
+			}),
+		})
+
+		-- Global diagnostic keymaps
 		vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "LSP: Show line diagnostics" })
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "LSP: Go to previous diagnostic" })
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "LSP: Go to next diagnostic" })
 		vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "LSP: Open diagnostics list" })
 
 		local on_attach = function(client, bufnr)
+			-- Helper function for setting buffer-local keymaps
 			local map = function(keys, func, desc)
 				vim.keymap.set("n", keys, func, { buffer = bufnr, desc = "LSP: " .. desc })
 			end
@@ -30,6 +59,7 @@ return {
 			local lspsaga_avail, lspsaga = pcall(require, "lspsaga.lsp")
 			local telescope_avail, telescope = pcall(require, "telescope.builtin")
 
+			-- LSP Hover Documentation
 			map("K", function()
 				if lspsaga_avail then
 					lspsaga.hover_doc()
@@ -38,23 +68,39 @@ return {
 				end
 			end, "Hover Documentation")
 
+			-- Standard LSP Go To (auto-jumps if one result, quickfix/list if many)
+			map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition") -- Go to definition
+			map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration") -- Go to declaration
+
+			-- Telescope-specific LSP keymaps for interactive pickers
 			if telescope_avail then
-				map("gd", telescope.lsp_definitions, "[G]oto [D]efinition")
-				map("gr", telescope.lsp_references, "[G]oto [R]eferences")
-				map("gI", telescope.lsp_implementations, "[G]oto [I]mplementation")
-				map("<leader>D", telescope.lsp_type_definitions, "Type [D]efinition")
-				map("<leader>ds", telescope.lsp_document_symbols, "[D]ocument [S]ymbols")
-				map("<leader>ws", telescope.lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
+				-- Use <leader>l prefix for Telescope's LSP pickers
+				map("<leader>ld", function()
+					telescope.lsp_definitions({ bufnr = bufnr, client = client })
+				end, "Telescope [L]SP [D]efinitions")
+				map("<leader>lD", function()
+					telescope.lsp_declaration({ bufnr = bufnr, client = client })
+				end, "Telescope [L]SP [D]eclaration")
+				map("gr", function()
+					telescope.lsp_references({ bufnr = bufnr, client = client })
+				end, "[G]oto [R]eferences")
+				map("gI", function()
+					telescope.lsp_implementations({ bufnr = bufnr, client = client })
+				end, "[G]oto [I]mplementation")
+				map("<leader>D", function()
+					telescope.lsp_type_definitions({ bufnr = bufnr, client = client })
+				end, "Type [D]efinition")
+				map("<leader>ds", function()
+					telescope.lsp_document_symbols({ bufnr = bufnr, client = client })
+				end, "[D]ocument [S]ymbols")
+				map("<leader>ws", function()
+					telescope.lsp_dynamic_workspace_symbols({ bufnr = bufnr, client = client })
+				end, "[W]orkspace [S]ymbols")
 			else
-				map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
-				map("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
-				map("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
-				map("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
-				-- No easy fallback for symbols without Telescope or similar
+				vim.notify("Telescope not available for advanced LSP pickers.", vim.log.levels.WARN)
 			end
 
-			map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-
+			-- Rename and Code Action
 			map("<leader>rn", function()
 				if lspsaga_avail then
 					lspsaga.rename()
@@ -92,7 +138,6 @@ return {
 				})
 			end
 
-			-- Inlay Hints (same as your original config)
 			if client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
 				map("<leader>th", function()
 					vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }))
@@ -109,6 +154,7 @@ return {
 					})
 				end,
 
+				-- Specific handler for lua_ls
 				["lua_ls"] = function()
 					lspconfig.lua_ls.setup({
 						capabilities = capabilities,
@@ -116,8 +162,14 @@ return {
 						settings = {
 							Lua = {
 								runtime = { version = "LuaJIT" },
-								diagnostics = { globals = { "vim" } },
-								workspace = { checkThirdParty = false }, -- Adjust as needed
+								diagnostics = {
+									globals = { "vim" }, -- Crucial for recognizing the 'vim' global
+								},
+								workspace = {
+									checkThirdParty = false,
+									-- neodev.nvim automatically manages the 'library' field here
+									-- to include Neovim runtime and plugin definitions.
+								},
 								telemetry = { enable = false },
 							},
 						},
@@ -125,5 +177,5 @@ return {
 				end,
 			},
 		})
-	end,
+	end, -- end config function
 }
