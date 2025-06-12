@@ -14,6 +14,7 @@ return {
 			"ruby",
 			"vimdoc",
 			"query",
+			"prisma",
 		},
 		sync_install = false,
 		auto_install = true,
