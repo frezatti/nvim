@@ -1,0 +1,39 @@
+.
+├── .DS_Store
+├── init.lua
+├── lazy-lock.json
+├── lazyvim.json
+├── lua
+│   ├── config
+│   │   └── lazy.lua
+│   ├── .DS_Store
+│   └── plugins
+│       ├── autocompletion.lua
+│       ├── colorscheme.lua
+│       ├── conform.lua
+│       ├── dap-go.lua
+│       ├── dap.lua
+│       ├── disable-news-alert.lua
+│       ├── dressing.lua
+│       ├── git.lua
+│       ├── harpoon.lua
+│       ├── icons.lua
+│       ├── layzdev.lua
+│       ├── legendary.lua
+│       ├── lsp.lua
+│       ├── lualine.lua
+│       ├── luvit.lua
+│       ├── nvim-dap-ui.lua
+│       ├── oil.lua
+│       ├── telescope-fzf-native.lua
+│       ├── telescope.lua
+│       ├── treesitter.lua
+│       ├── trouble.lua
+│       ├── undotree.lua
+│       └── vim-tmux.lua
+├── plugin
+│   ├── keymap.lua
+│   └── options.lua
+└── structure.txt
+
+5 directories, 32 files

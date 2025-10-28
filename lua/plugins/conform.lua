@@ -21,6 +21,7 @@ return {
 		conform.setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
+				c = { "clang-format" },
 				go = { "goimports", "gofumpt", "golines" },
 				python = { "isort", "black" },
 				javascript = { "prettierd", "prettier", stop_after_first = true },
