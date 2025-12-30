@@ -21,5 +21,9 @@ return {
 
 		-- Open parent directory in floating window
 		vim.keymap.set("n", "<space>-", require("oil").toggle_float)
+
+		if vim.fn.argc() == 0 then
+			require("oil").open()
+		end
 	end,
 }
