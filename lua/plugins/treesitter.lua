@@ -15,6 +15,8 @@ return {
 			"vimdoc",
 			"query",
 			"prisma",
+			"zig",
+			"c_sharp",
 		},
 		sync_install = false,
 		auto_install = true,
