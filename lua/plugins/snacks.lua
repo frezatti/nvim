@@ -3,19 +3,25 @@ return {
 	priority = 1000,
 	lazy = false,
 	opts = {
-		-- BIG FEATURES
-		dashboard = { enabled = false }, -- Explicitly disabled as requested
-		explorer = { enabled = true }, -- A fast file explorer (optional, since you use Oil)
-		picker = { enabled = true }, -- Replaces functionality of Telescope/Dressing for selections
+		dashboard = { enabled = false },
+		explorer = { enabled = true },
+		picker = { enabled = true },
 
-		-- QUALITY OF LIFE (The stuff you were missing)
-		indent = { enabled = true }, -- Adds vertical indentation lines
-		input = { enabled = true }, -- Better UI for "Renaming" (Replaces Dressing)
-		notifier = { enabled = true }, -- Better notification cards
-		scope = { enabled = true }, -- Highlights the specific code block you are in
-		scroll = { enabled = true }, -- Smooth scrolling
-		statuscolumn = { enabled = true }, -- Git signs in the number column
-		words = { enabled = true }, -- Highlights words referencing the one under cursor
+		indent = { enabled = true },
+		input = { enabled = true },
+		notifier = { enabled = true },
+
+		scope = {
+			enabled = true,
+			treesitter = {
+				enabled = true,
+				injections = false,
+			},
+		},
+
+		scroll = { enabled = true },
+		statuscolumn = { enabled = true },
+		words = { enabled = true },
 	},
 	keys = {
 		-- PICKER (File Search)
