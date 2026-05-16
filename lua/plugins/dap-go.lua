@@ -1,11 +1,17 @@
 return {
-	 "leoluz/nvim-dap-go",
-  dependencies = { "mfussenegger/nvim-dap" },
-  -- Lazy-load only for Go files
-  ft = "go",
-  keys = {
-    { "<space>td", function() require("dap-go").debug_test() end, desc = "DAP: Debug Go Test" }
-  },
+	"leoluz/nvim-dap-go",
+	dependencies = { "mfussenegger/nvim-dap" },
+	-- Lazy-load only for Go files
+	ft = "go",
+	keys = {
+		{
+			"<space>tg",
+			function()
+				require("dap-go").debug_test()
+			end,
+			desc = "DAP: Debug Go Test",
+		},
+	},
 	config = function()
 		require("dap-go").setup({
 			dap_configurations = {

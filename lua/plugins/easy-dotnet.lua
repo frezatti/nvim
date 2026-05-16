@@ -8,10 +8,20 @@ return {
 		{ "<leader>ct", "<cmd>Dotnet test<cr>", desc = ".NET Test" },
 		{ "<leader>cT", "<cmd>Dotnet testrunner<cr>", desc = ".NET TestRunner" },
 		{ "<leader>cp", "<cmd>Dotnet project view<cr>", desc = ".NET Project Manager" },
+		{
+			"<leader>cd",
+			function()
+				require("easy-dotnet").debug()
+			end,
+			desc = ".NET Debug",
+		},
 	},
 	config = function()
 		require("easy-dotnet").setup({
 			auto_bootstrap_namespace = true,
+			lsp = {
+				enable = false,
+			},
 		})
 	end,
 }
