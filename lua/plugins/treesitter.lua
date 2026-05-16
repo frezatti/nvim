@@ -1,5 +1,6 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
+	branch = "main",
 	build = ":TSUpdate",
 	opts = {
 		ensure_installed = {
@@ -11,12 +12,24 @@ return {
 			"c",
 			"lua",
 			"vim",
-			"ruby",
 			"vimdoc",
 			"query",
+			"ruby",
 			"prisma",
 			"zig",
 			"c_sharp",
+
+			-- Markdown
+			"markdown",
+			"markdown_inline",
+
+			-- Common config/web files
+			"html",
+			"css",
+			"json",
+			"yaml",
+			"toml",
+			"bash",
 		},
 		sync_install = false,
 		auto_install = true,
