@@ -122,6 +122,7 @@ return {
 			"isort",
 			"black",
 			"clang-format",
+			"netcoredbg",
 		})
 
 		for i, v in ipairs(ensure_installed) do
